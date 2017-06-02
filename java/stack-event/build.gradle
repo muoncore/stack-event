@@ -1,0 +1,17 @@
+apply plugin:"groovy"
+
+repositories {
+    maven {
+        url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon"
+    }
+    maven {
+        url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon-snapshot"
+    }
+}
+
+dependencies {
+    compile "io.muoncore:muon-core:7.3.0-SNAPSHOT"
+    compile "io.muoncore.protocol:stack-reactive-streams:0.0.1-SNAPSHOT"
+    testCompile 'org.slf4j:slf4j-simple:1.7.12'
+}
+

@@ -1,0 +1,3 @@
+# Event Data Muon Stack
+
+This stack adds Event and event streaming support to Muon libraries

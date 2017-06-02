@@ -1,0 +1,23 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+    maven {
+      url 'http://maven.tmatesoft.com/content/repositories/releases/'
+    }
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+      url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon"
+    }
+  }
+  dependencies {
+    classpath 'io.muoncore.release:muon-java-release:0.0.5'
+    classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.2.0')
+    classpath "io.franzbecker:gradle-lombok:1.8"
+  }
+}
+
+apply plugin: 'io.muoncore.release'
+

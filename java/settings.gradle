@@ -1,0 +1,3 @@
+rootProject.name="stack-event"
+
+include "stack-event"

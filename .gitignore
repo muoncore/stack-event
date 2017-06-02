@@ -1,0 +1,11 @@
+xunit.xml
+*.iml
+*.ipr
+*.iws
+.idea/
+node_modules/
+muon.config
+test-results/
+tempdocumentation/
+distribution/
+build/

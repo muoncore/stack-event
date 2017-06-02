@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
   "name": "muon-stack-event",
   "version": "0.0.1-0",
-=======
-  "name": "muon-stack-reactive-streams",
-  "version": "0.0.2-7",
->>>>>>> origin/master
   "description": "",
   "main": "./distribution/protocol.js",
   "scripts": {

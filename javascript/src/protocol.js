@@ -10,12 +10,14 @@ var protocolName = 'event';
 
 exports.create = function(muon) {
 
+
   var api = exports.getApi(muon.infrastructure().serviceName, muon.infrastructure());
+  api.muon = muon
 
   muon.addServerStack(api)
 
-  muon.replay = function (remoteurl, config, callback, errorCallback, completeCallback) {
-    return muon.subscribe(remoteurl, config, callback, errorCallback, completeCallback);
+  muon.replay = function (config, callback, errorCallback, completeCallback) {
+    return api.replay(config, callback, errorCallback, completeCallback);
   }
   muon.emit = function(event) {
     return api.emit(event)
@@ -31,6 +33,30 @@ exports.getApi = function (name, infrastructure) {
     },
     endpoints: function () {
       return [];
+    },
+    replay: function(streamName, config, clientCallback, errorCallback, completeCallback) {
+      var ret = {}
+      var muon = this.muon
+      infrastructure.discovery.discoverServices(function(services) {
+        var store = services.findServiceWithTags(["eventstore"])
+
+        if (store == null || store == undefined) {
+          errorCallback({
+            status: "FAILED",
+            cause: "No event store could be found, is Photon running?"
+          })
+          return
+        }
+
+        config['stream-name'] = streamName
+
+        logger.debug("Found event store: " +JSON.stringify(store))
+
+        var subscriber = muon.subscribe("stream://" + store.identifier + "/stream", config, clientCallback, errorCallback, completeCallback)
+
+        ret.cancel = subscriber.cancel
+      })
+      return ret
     },
     emit: function (event) {
 

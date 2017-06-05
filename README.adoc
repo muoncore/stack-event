@@ -1,3 +1,17 @@
 # Event Data Muon Stack
 
 This stack adds Event and event streaming support to Muon libraries
+
+
+## License
+
+All code is Copyright (c) Muon Core Ltd 2017.
+
+Muon is Free Software, licensed under the terms of
+the LGPLv3 license as included in link:LICENSE[]
+
+Muon has a commercial-friendly license allowing private forks and closed modifications of all projects, alongside enterprise support and extended support for enterprise technologies and patterns.
+
+This will enable you to use Muon in any situation where your legal team will not accept a Free Software license.
+
+Please see http://muoncore.io/pro/ for more detail.  You can find the commercial license terms in COMM-LICENSE.

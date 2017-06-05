@@ -1,3 +1,10 @@
+|===
+| Master Build | NPM Stable | Snapshots
+| image:https://img.shields.io/teamcity/http/teamcity.simplicityitself.com/e/OpenSource_MuonReleases_Stacks_EventsSnapshot.svg[Status]
+| image:https://img.shields.io/npm/v/muon-stack-event.svg[NPM]
+| image:https://img.shields.io/npm/v/muon-stack-event/next.svg[NPM]
+|===
+
 # Event Data Muon Stack
 
 This stack adds Event and event streaming support to Muon libraries

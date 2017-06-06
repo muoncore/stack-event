@@ -29,7 +29,7 @@ class EventClientProtocolStackSpec extends Specification {
         def config = new AutoConfiguration(serviceName: "tombola")
 
         def discovery = Mock(Discovery) {
-            findService(_) >> Optional.of(new ServiceDescriptor("tombola", [], [], [], []))
+          getServiceWithTags(_) >> Optional.of(new ServiceDescriptor("tombola", [], [], [], []))
         }
 
         def clientChannel = Mock(ChannelConnection)
@@ -67,7 +67,7 @@ class EventClientProtocolStackSpec extends Specification {
         StandardAsyncChannel.echoOut=true
 
         def discovery = Mock(Discovery) {
-            findService(_) >> Optional.empty()
+          getServiceWithTags(_) >> Optional.empty()
         }
         def clientChannel = Mock(ChannelConnection)
         def transportClient = Mock(TransportClient) {
@@ -99,7 +99,7 @@ class EventClientProtocolStackSpec extends Specification {
         StandardAsyncChannel.echoOut=true
         def config = new AutoConfiguration(serviceName: "tombola")
         def discovery = Mock(Discovery) {
-            findService(_) >> Optional.of(new ServiceDescriptor("tombola", [], [], [], []))
+          getServiceWithTags(_) >> Optional.of(new ServiceDescriptor("tombola", [], [], [], []))
         }
         def clientChannel = Mock(ChannelConnection)
         def transportClient = Mock(TransportClient) {

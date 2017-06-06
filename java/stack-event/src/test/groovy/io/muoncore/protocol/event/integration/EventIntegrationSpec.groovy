@@ -16,6 +16,7 @@ import io.muoncore.protocol.event.server.EventServerProtocolStack
 import io.muoncore.protocol.event.server.EventWrapper
 import io.muoncore.protocol.reactivestream.messages.ReactiveStreamSubscriptionRequest
 import io.muoncore.protocol.reactivestream.server.PublisherLookup
+import io.muoncore.protocol.reactivestream.server.ReactiveStreamServer
 import io.muoncore.protocol.reactivestream.server.ReactiveStreamServerHandlerApi
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -154,7 +155,7 @@ class EventIntegrationSpec extends Specification {
 
         new MultiTransportMuon(config, discovery, [transport], new JsonOnlyCodecs())
     }
-    public Muon muonEventStore(Closure handler) {
+    public ReactiveStreamServer muonEventStore(Closure handler) {
         def config = new AutoConfiguration(tags:["eventstore"], serviceName: "chronos")
         def transport = new InMemTransport(config, eventbus)
 
@@ -162,6 +163,6 @@ class EventIntegrationSpec extends Specification {
 
         muon.protocolStacks.registerServerProtocol(new EventServerProtocolStack(handler, muon.codecs, discovery))
 
-        muon
+        new ReactiveStreamServer(muon)
     }
 }

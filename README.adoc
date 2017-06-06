@@ -5,10 +5,167 @@
 | image:https://img.shields.io/npm/v/muon-stack-event/next.svg[NPM]
 |===
 
-# Event Data Muon Stack
+## Event Persistence Muon Stack
 
-This stack adds Event and event streaming support to Muon libraries
+## What is a Muon Stack?
 
+Muon is a set of libraries and services that let you build highly effective distributed systems that are message and event oriented.
+
+Muon is structured as a set of libraries, known as `muon-core` that give a set of infrastructure for building messaging systems. These are available in multiple languages and handle the concerns of discovery, transport, encoding and managing failures. On top of these, the exact messaging semantics that you want to express are built. These are built as a "stack", a set of channels, agents and finally a user facing API that you will use in your application code.
+
+Muon has several such stacks, covering different scenarios and tasks, letting you communicate in various ways, highly distributed, cross platform and taking advantage of best of breed infrastructure and technologies.
+
+## What is Event Persistence?
+
+Event Driven Architectures (EDA) are a way for systems and components to interact based on the _things that have happened to them_, the events about them. Common problems with EDA are that :
+
+* events can go missing when network transported
+* events can be missed if a component is offline
+* the history is often useful for stream processing analysis, trend detection and the like.
+
+Persisting your events into an event store that permits events so be replayed on demand solves these issues. It allows your applications to emit events, observe them and then selectively replay the streams that you are interested in at some later point as well.
+
+This stack implements an event streaming API client. You can use it to interact with a remote event store, emit events and replay streams on demand.
+
+The server side is implemented by link:https://github.com/muoncore/photon[Photon] (A Clojure based Event Store with functional event Projections) or link:https://github.com/muoncore/photonlite[PhotonLite] (an event stream API layer)
+
+## Using this stack
+
+First, you need to start up one of the event stores. If you have used the link:https://github.com/muoncore/muonstarter[Muon Starter] then you have this running already.
+
+### JVM
+
+To use the stack in Java, first import Muon, a transport/ discovery and the Event Stack
+
+*build.gradle*
+[source, groovy]
+----
+repositories {
+   jcenter()
+   maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon' }
+   maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon-snapshot' }
+}
+
+dependencies {
+   compile "io.muoncore:muon-core:<version>"
+   compile "io.muoncore:muon-transport-amqp:<version>"
+   compile "io.muoncore:muon-discovery-amqp:<version>"
+   compile "io.muoncore.protocol:stack-event:<version>"
+}
+----
+
+#### Create an Event Client
+
+This stack allows you to emit events and replay them. For replay, it exposes an API that uses Reactive Streams Publisher/ Subscribers to manage the subscription.
+
+First then, you need to be able to obtain a Subscriber. If you don't have one already, use a FRP system of some kind to make one. Consider using Spring Reactor, Akka Streams or RxJava, amongst others.
+
+[source, java]
+----
+
+Muon muon = .. create a muon ..;
+
+DefaultEventClient events = new DefaultEventClient(muon);
+
+
+events.event(
+        ClientEvent.ofType("UserRegistered")
+                .payload(new UserRegistered("Roger", "Rabbit"))
+                .stream("users")
+                .build());
+
+Subscriber<Event> subscriber = .. your subscriber ..
+
+Map<String, Object> args = ...
+
+/*
+available args:-
+
+* from - the event order-id to replay from
+
+*/
+
+
+events.replay(
+       "users",
+       EventReplayMode.REPLAY_THEN_LIVE,
+       args,
+       subscriber);
+
+----
+
+You can use these to selectively replay certain streams, play them back
+
+### Node.js
+
+To use the client event stack, import Muon, disco/ transport and the stack. This requires the reactive streams stack to be present.
+
+```
+npm install --save muon-core@next
+npm install --save muon-amqp@next  #or, any other transport+discovery here
+npm install --save muon-stack-reactive-streams@next
+npm install --save muon-stack-event@next
+```
+
+Then, create a Muon instance and attach the Event client stack
+
+*index.js*
+[source, javascript]
+----
+var Muon = require("muon-core")
+
+var muonurl = process.env.MUON_URL || "amqp://muon:microservices@localhost"
+
+var muon = Muon.create("hello-world-node", muonurl);           <1>
+
+require("muon-stack-reactive-streams").create(muon)
+require("muon-stack-event").create(muon)                       <2>
+
+var args = {
+  from: <an-order-id>,
+  stream-type: cold | hot | hot-cold,
+}
+
+
+muon.emit({                                                   <3>
+        "event-type": "UserRegistered",
+        "stream-name": "users",
+        "service-id": "my-service",
+        payload: {
+          firstname: "John",
+          lastname: "Simples"
+        }
+    }).then(function (resp) {
+        logger.info("Slack message persisted")
+})
+
+
+muon.replay("user",{},                                         <4>
+   function(data) {
+       // on data received
+   },
+   function(error) {
+       // on error
+   },
+   function() {
+       // on complete
+   }
+)
+
+----
+<1> Create a new Muon instance, connecting to a local AMQP broker for discovery and transport
+<2> Add the event stack, in addition to the reactive streams stack.
+<3> Use the added `emit` method to persist events
+<3> Use the added `replay` method to replay historical events and continue to listen to new events
+
+## Getting involved/ adding to this stack.
+
+Additions and extensions to this stack are very welcome.
+
+Particularly of interest are :-
+
+* Added language support
+* Integrate with javascript FRP libraries.
 
 ## License
 
@@ -21,4 +178,4 @@ Muon has a commercial-friendly license allowing private forks and closed modific
 
 This will enable you to use Muon in any situation where your legal team will not accept a Free Software license.
 
-Please see http://muoncore.io/pro/ for more detail.  You can find the commercial license terms in COMM-LICENSE.
+Please see http://muoncore.io/pro/ for more detail.  You can find the commercial license terms in link:COMM-LICENSE[]

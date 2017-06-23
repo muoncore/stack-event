@@ -48,7 +48,6 @@ public class EventServerProtocolStack implements
 
         api2.left().receive( message -> {
             if (message == null || message.getPayload() == null) {
-              System.out.println("Null received from the channel " + message);
                 return;
             }
 

@@ -11,7 +11,7 @@ ifndef VERSION
 endif
 	echo "#DO NOT EDIT MANUALLY. Change in Makefile">gradle.properties
 	echo version=$(VERSION)>>gradle.properties
-	echo group=io.muoncore.stack>>gradle.properties
+	echo group=io.muoncore.protocol>>gradle.properties
 	echo exclude=>>gradle.properties
 	./gradlew artifactoryPublish
 	git add gradle.properties

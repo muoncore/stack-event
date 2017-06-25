@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile "io.muoncore:muon-core:7.3.0-SNAPSHOT"
+    compile "io.muoncore:muon-core:7.3.2"
     compile "io.muoncore.protocol:stack-reactive-streams:0.0.1-SNAPSHOT"
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
 }

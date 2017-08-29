@@ -1,6 +1,6 @@
 |===
 | Master Build | NPM Stable | Snapshots
-| image:https://img.shields.io/teamcity/http/teamcity.simplicityitself.com/e/OpenSource_MuonReleases_Stacks_EventsSnapshot.svg[Status]
+| image:https://img.shields.io/teamcity/http/teamcity.cloud.daviddawson.me/e/OpenSource_MuonReleases_Stacks_EventsSnapshot.svg[Status]
 | image:https://img.shields.io/npm/v/muon-stack-event.svg[NPM]
 | image:https://img.shields.io/npm/v/muon-stack-event/next.svg[NPM]
 |===

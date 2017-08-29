@@ -83,7 +83,7 @@ class EventClientProtocolStackSpec extends Specification {
 
         when:
         def response = eventStore.event(
-                new ClientEvent("awesome", "SomethingHappened2", "simples", 1234, "myService", []))
+                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []))
 
         then:
         response
@@ -121,7 +121,7 @@ class EventClientProtocolStackSpec extends Specification {
 
         when:
         def response = eventStore.event(
-                new ClientEvent("awesome", "SomethingHappened2", "simples", 1234, "myService", []))
+                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []))
 
         then:
         response

@@ -59,10 +59,10 @@ class EventIntegrationSpec extends Specification {
 
         when:
 
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
+        results << evClient.event(new ClientEvent("myid", "awesome", "SomethingHappened", "myid", "1234", "muon1", [msg:"HELLO WORLD"]))
+        results << evClient.event(new ClientEvent("myid", "awesome", "SomethingHappened", "myid", "1234", "muon1", [msg:"HELLO WORLD"]))
+        results << evClient.event(new ClientEvent("myid", "awesome", "SomethingHappened", "myid", "1234", "muon1", [msg:"HELLO WORLD"]))
+        results << evClient.event(new ClientEvent("myid", "awesome", "SomethingHappened", "myid", "1234", "muon1", [msg:"HELLO WORLD"]))
 
         then:
         new PollingConditions().eventually {
@@ -88,7 +88,7 @@ class EventIntegrationSpec extends Specification {
 
         when:
         200.times {
-            evClient.event(new ClientEvent("${it}", "SomethingHappened", "1.0", 1234, "muon1", [msg:"HELLO WORLD"]))
+            evClient.event(new ClientEvent("myid", "${it}", "SomethingHappened", "1.0", "1234", "muon1", [msg:"HELLO WORLD"]))
         }
 
         then:

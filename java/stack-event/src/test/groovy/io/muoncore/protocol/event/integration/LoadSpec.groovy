@@ -17,8 +17,6 @@ import io.muoncore.protocol.event.server.EventWrapper
 import io.muoncore.protocol.reactivestream.messages.ReactiveStreamSubscriptionRequest
 import io.muoncore.protocol.reactivestream.server.PublisherLookup
 import io.muoncore.protocol.reactivestream.server.ReactiveStreamServer
-import io.muoncore.protocol.reactivestream.server.ReactiveStreamServerHandlerApi
-import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import reactor.Environment
@@ -26,82 +24,12 @@ import reactor.rx.Streams
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-class EventIntegrationSpec extends Specification {
+class LoadSpec extends Specification {
 
     def discovery = new InMemDiscovery()
     def eventbus = new EventBus()
 
-    def "can emit a series of events and have them recieved on the server side"() {
-
-        Environment.initializeIfEmpty()
-
-        def data = []
-        List<EventResult> results = []
-
-        boolean fail = true
-
-        def muon2 = muonEventStore { EventWrapper ev ->
-            println "Event is the awesome ${ev.event}"
-            data << ev.event
-            if (!fail) {
-                ev.persisted(12345, System.currentTimeMillis())
-                fail = true
-            } else {
-                ev.failed("Something went wrong")
-                fail = false
-            }
-        }
-
-        def muon1 = muon("simples")
-
-        def evClient = new DefaultEventClient(muon1)
-
-
-        when:
-
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-        results << evClient.event(new ClientEvent("awesome", "SomethingHappened", "myid", 1234, "muon1", [msg:"HELLO WORLD"]))
-
-        then:
-        new PollingConditions().eventually {
-            data.size() == 4
-            results.size() == 4
-            results.findAll { it.status == EventResult.EventResultStatus.PERSISTED }.size() == 2
-            results.findAll { it.status == EventResult.EventResultStatus.FAILED }.size() == 2
-        }
-    }
-
-    def "data remains in order"() {
-
-        def data = []
-
-        def muon2 = muonEventStore { EventWrapper ev ->
-            println "Event is the awesome ${ev.event}"
-            data << ev.event
-            ev.persisted(54321, System.currentTimeMillis())
-        }
-
-        def muon1 = muon("simples")
-        def evClient = new DefaultEventClient(muon1)
-
-        when:
-        200.times {
-            evClient.event(new ClientEvent("${it}", "SomethingHappened", "1.0", 1234, "muon1", [msg:"HELLO WORLD"]))
-        }
-
-        then:
-        new PollingConditions(timeout: 30).eventually {
-            data.size() == 200
-            def sorted = new ArrayList<Event>(data).sort {
-                Integer.parseInt(it.eventType)
-            }
-            data == sorted
-        }
-    }
-
-  def "partial replay works"() {
+  def "many subscribes and then emit works"() {
 
     def data = []
 
@@ -111,7 +39,14 @@ class EventIntegrationSpec extends Specification {
       ev.persisted(54321, System.currentTimeMillis())
     }
 
-    def muon1 = muon("simples")
+    def muons = [
+      muon("simple1"),
+      muon("simple2"),
+      muon("simple3"),
+      muon("simple4"),
+      muon("simple5"),
+      muon("simple6")]
+
     def args
     muon2.publishGeneratedSource("/stream", PublisherLookup.PublisherType.HOT) {
       ReactiveStreamSubscriptionRequest subscriptionRequest ->
@@ -119,29 +54,40 @@ class EventIntegrationSpec extends Specification {
         args = subscriptionRequest.args
         return Streams.from()
     }
-    def evClient = new DefaultEventClient(muon1)
-    def replayed = []
+
+    def evClients = muons.collect {
+      new DefaultEventClient(it)
+    }
 
     when:
-    evClient.replay("SomethingHappened", EventReplayMode.REPLAY_THEN_LIVE, ["from": 112345], new Subscriber() {
-      @Override
-      void onSubscribe(Subscription s) {
-        s.request(Integer.MAX_VALUE)
-      }
+    def replayed = evClients.collect {
+      def replayed = []
 
-      @Override
-      void onNext(Object o) {
-        replayed << o
-      }
+      it.replay("SomethingHappened", EventReplayMode.REPLAY_THEN_LIVE, ["from": 112345], new Subscriber() {
+        @Override
+        void onSubscribe(Subscription s) {
+          s.request(Integer.MAX_VALUE)
+        }
 
-      @Override
-      void onError(Throwable t) { t.printStackTrace() }
+        @Override
+        void onNext(Object o) {
+          replayed << o
+        }
 
-      @Override
-      void onComplete() {
-        println "Completed"
-      }
-    })
+        @Override
+        void onError(Throwable t) { t.printStackTrace() }
+
+        @Override
+        void onComplete() {
+          println "Completed"
+        }
+      })
+      replayed
+    }
+
+    50.times {
+      evClients[0].event(new ClientEvent("id", "${it}" as String, "SomethingHappened", "1.0", "", "muon1", [msg: "HELLO WORLD"]))
+    }
 
     then:
     new PollingConditions(timeout: 30).eventually {
@@ -155,7 +101,8 @@ class EventIntegrationSpec extends Specification {
 
         new MultiTransportMuon(config, discovery, [transport], new JsonOnlyCodecs())
     }
-    public ReactiveStreamServer muonEventStore(Closure handler) {
+
+    ReactiveStreamServer muonEventStore(Closure handler) {
         def config = new AutoConfiguration(tags:["eventstore"], serviceName: "chronos")
         def transport = new InMemTransport(config, eventbus)
 

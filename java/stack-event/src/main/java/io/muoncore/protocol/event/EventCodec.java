@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class EventCodec {
 
+    private static final String ID = "id";
     private static final String STREAM_NAME = "stream-name";
     private static final String PAYLOAD = "payload";
     private static final String EVENT_TYPE = "event-type";
@@ -21,6 +22,7 @@ public class EventCodec {
 
     public static Event getEventFromMap(Map<String, Object> data, Codecs codecs) {
         return new Event(
+          (String) data.get(ID),
                 (String) data.get(EVENT_TYPE),
                 (String) data.get(STREAM_NAME),
                 (String) data.get(SCHEMA),
@@ -34,16 +36,17 @@ public class EventCodec {
         );
     }
 
-    private static Long getCausedByIdAsLong(Object val) {
+    private static String getCausedByIdAsLong(Object val) {
         if (val instanceof Double) {
             Double dat = (Double) val;
-            return dat.longValue();
+            return String.valueOf(dat.longValue());
         }
-        return (Long) val;
+        return String.valueOf(val);
     }
 
     public static Map<String, Object> getMapFromClientEvent(ClientEvent event, AutoConfiguration config) {
         Map<String, Object> payload = new HashMap<>();
+        payload.put(ID, event.getId());
         payload.put(STREAM_NAME, event.getStreamName());
         payload.put(PAYLOAD, event.getPayload());
         payload.put(EVENT_TYPE, event.getEventType());
@@ -56,6 +59,7 @@ public class EventCodec {
 
     public static Map<String, Object> getMapFromEvent(Event event) {
         Map<String, Object> payload = new HashMap<>();
+        payload.put(ID, event.getId());
         payload.put(STREAM_NAME, event.getStreamName());
         payload.put(PAYLOAD, event.getPayload(Map.class));
         payload.put(EVENT_TYPE, event.getEventType());

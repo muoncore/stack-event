@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.0.4](https://github.com/muoncore/stack-event/tree/v0.0.4) (2017-08-29)
+[Full Changelog](https://github.com/muoncore/stack-event/compare/v0.0.3...v0.0.4)
+
 ## [v0.0.3](https://github.com/muoncore/stack-event/tree/v0.0.3) (2017-08-29)
 [Full Changelog](https://github.com/muoncore/stack-event/compare/v0.0.2...v0.0.3)
 

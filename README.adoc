@@ -27,7 +27,7 @@ Persisting your events into an event store that permits events so be replayed on
 
 This stack implements an event streaming API client. You can use it to interact with a remote event store, emit events and replay streams on demand.
 
-The server side is implemented by link:https://github.com/muoncore/photon[Photon] (A Clojure based Event Store with functional event Projections) or link:https://github.com/muoncore/photonlite[PhotonLite] (an event stream API layer)
+The server side is implemented by link:https://github.com/muoncore/photon[Photon] (A Clojure based Event Store with functional event Projections), link:https://github.com/muoncore/photonlite[PhotonLite] (an event stream API layer) or any other service (local or remote) that implements the server side of this protocol. This gives you the ability to vary the implementation of your event store, including having different event stores for different streams.
 
 ## Using this stack
 

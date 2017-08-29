@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.0.2](https://github.com/muoncore/stack-event/tree/v0.0.2) (2017-08-29)
+[Full Changelog](https://github.com/muoncore/stack-event/compare/v0.0.1...v0.0.2)
+
+**Closed issues:**
+
+- Make caused-by-id a string, to enable use as matched against order-id and also other ids [\#5](https://github.com/muoncore/stack-event/issues/5)
+- Add an optional entity ID to the event metadata [\#4](https://github.com/muoncore/stack-event/issues/4)
+
 ## [v0.0.1](https://github.com/muoncore/stack-event/tree/v0.0.1) (2017-06-25)
 
 

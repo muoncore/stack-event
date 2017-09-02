@@ -4,14 +4,11 @@ repositories {
     maven {
         url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon"
     }
-    maven {
-        url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon-snapshot"
-    }
 }
 
 dependencies {
-    compile "io.muoncore:muon-core:7.3.2"
-    compile "io.muoncore.protocol:stack-reactive-streams:0.0.1-SNAPSHOT"
+    compile "io.muoncore:muon-core:7.4.0"
+    compile "io.muoncore.protocol:stack-reactive-streams:0.0.3"
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
 }
 

@@ -1,17 +1,15 @@
 package io.muoncore.protocol.event.integration
 
-import com.google.common.eventbus.EventBus
 import io.muoncore.MultiTransportMuon
 import io.muoncore.Muon
 import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.config.AutoConfiguration
 import io.muoncore.memory.discovery.InMemDiscovery
 import io.muoncore.memory.transport.InMemTransport
+import io.muoncore.memory.transport.bus.EventBus
 import io.muoncore.protocol.event.ClientEvent
-import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.client.DefaultEventClient
 import io.muoncore.protocol.event.client.EventReplayMode
-import io.muoncore.protocol.event.client.EventResult
 import io.muoncore.protocol.event.server.EventServerProtocolStack
 import io.muoncore.protocol.event.server.EventWrapper
 import io.muoncore.protocol.reactivestream.messages.ReactiveStreamSubscriptionRequest
@@ -19,8 +17,6 @@ import io.muoncore.protocol.reactivestream.server.PublisherLookup
 import io.muoncore.protocol.reactivestream.server.ReactiveStreamServer
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-import reactor.Environment
-import reactor.rx.Streams
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 

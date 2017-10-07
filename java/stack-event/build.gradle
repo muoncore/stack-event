@@ -2,13 +2,52 @@ apply plugin:"groovy"
 
 repositories {
     maven {
-        url "https://simplicityitself.artifactoryonline.com/simplicityitself/muon"
+        url "http://artifactory.cloud.daviddawson.me/artifactory/muon"
     }
 }
 
 dependencies {
-    compile "io.muoncore:muon-core:7.4.0"
-    compile "io.muoncore.protocol:stack-reactive-streams:0.0.3"
+    compile "io.muoncore:muon-core:7.4.1"
+    compile "io.muoncore.protocol:stack-reactive-streams:0.0.4"
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
 }
 
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+}
+task packageJavadoc(type: Jar) {
+  from javadoc
+  classifier = 'javadoc'
+}
+
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact sourceJar {
+        classifier "sources"
+      }
+      artifact packageJavadoc
+      pom.withXml {
+        asNode().appendNode('name', "Muon Event Log API")
+        asNode().appendNode('description', 'Muon is a toolkit for building highly portable, polyglot, reactive APIs. This implements the Event Log class of APIs, across any Muon transport')
+        asNode().appendNode('url', 'http://muoncore.io')
+        def license = asNode().appendNode("licenses").appendNode("license")
+        license.appendNode("name", "The GNU Lesser General Public License, Version 3.0")
+        license.appendNode("url", "http://www.gnu.org/licenses/lgpl-3.0.txt")
+        license.appendNode("distribution", "repo")
+
+        asNode().appendNode("scm").appendNode("url", "https://github.com/muoncore/stack-event")
+
+        def developers = asNode().appendNode("developers")
+        def dev = developers.appendNode("developer")
+        dev.appendNode("name", "Muon Developers")
+        dev.appendNode("email", "info@muoncore.io")
+        dev.appendNode("organization", "Muon Project")
+        dev.appendNode("organizationUrl", "http://muoncore.io")
+
+      }
+    }
+  }
+}

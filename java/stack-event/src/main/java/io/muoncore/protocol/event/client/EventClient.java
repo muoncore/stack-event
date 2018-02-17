@@ -1,6 +1,7 @@
 package io.muoncore.protocol.event.client;
 
 import io.muoncore.api.MuonFuture;
+import io.muoncore.protocol.Auth;
 import io.muoncore.protocol.event.ClientEvent;
 import io.muoncore.protocol.event.Event;
 import org.reactivestreams.Subscriber;
@@ -15,8 +16,8 @@ public interface EventClient {
      * @param event
      * @return
      */
-    EventResult event(ClientEvent event);
-    MuonFuture<EventResult> eventAsync(ClientEvent event);
+    EventResult event(ClientEvent event, Auth auth);
+    MuonFuture<EventResult> eventAsync(ClientEvent event, Auth auth);
 
     /**
      * Load an event by id
@@ -37,6 +38,6 @@ public interface EventClient {
      * @param mode Whether to replay just the future data, or request to load historical data, if supported on the remote stream
      * @param subscriber The reactive streams subscriber that will listen to the event stream.
      */
-    <X> MuonFuture<EventReplayControl> replay(String streamName, EventReplayMode mode, Subscriber<Event> subscriber);
-    <X> MuonFuture<EventReplayControl> replay(String streamName, EventReplayMode mode, Map<String, Object> args, Subscriber<Event> subscriber);
+    <X> MuonFuture<EventReplayControl> replay(String streamName, Auth auth, EventReplayMode mode, Subscriber<Event> subscriber);
+    <X> MuonFuture<EventReplayControl> replay(String streamName, Auth auth, EventReplayMode mode, Map<String, Object> args, Subscriber<Event> subscriber);
 }

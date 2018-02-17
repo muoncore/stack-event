@@ -4,9 +4,11 @@ import io.muoncore.MultiTransportMuon
 import io.muoncore.Muon
 import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.config.AutoConfiguration
+import io.muoncore.liblib.reactor.rx.Streams
 import io.muoncore.memory.discovery.InMemDiscovery
 import io.muoncore.memory.transport.InMemTransport
 import io.muoncore.memory.transport.bus.EventBus
+import io.muoncore.protocol.Auth
 import io.muoncore.protocol.event.ClientEvent
 import io.muoncore.protocol.event.client.DefaultEventClient
 import io.muoncore.protocol.event.client.EventReplayMode
@@ -59,7 +61,7 @@ class LoadSpec extends Specification {
     def replayed = evClients.collect {
       def replayed = []
 
-      it.replay("SomethingHappened", EventReplayMode.REPLAY_THEN_LIVE, ["from": 112345], new Subscriber() {
+      it.replay("SomethingHappened",auth(),  EventReplayMode.REPLAY_THEN_LIVE, ["from": 112345], new Subscriber() {
         @Override
         void onSubscribe(Subscription s) {
           s.request(Integer.MAX_VALUE)
@@ -82,7 +84,7 @@ class LoadSpec extends Specification {
     }
 
     50.times {
-      evClients[0].event(new ClientEvent("id", "${it}" as String, "SomethingHappened", "1.0", "", "muon1", [msg: "HELLO WORLD"]))
+      evClients[0].event(new ClientEvent("id", "${it}" as String, "SomethingHappened", "1.0", "", "muon1", [msg: "HELLO WORLD"]), auth())
     }
 
     then:
@@ -108,4 +110,8 @@ class LoadSpec extends Specification {
 
         new ReactiveStreamServer(muon)
     }
+
+  Auth auth() {
+    new Auth("faked", "faked")
+  }
 }

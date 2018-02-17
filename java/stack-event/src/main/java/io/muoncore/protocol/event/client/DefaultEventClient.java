@@ -12,6 +12,7 @@ import io.muoncore.config.AutoConfiguration;
 import io.muoncore.exception.MuonException;
 import io.muoncore.message.MuonInboundMessage;
 import io.muoncore.message.MuonOutboundMessage;
+import io.muoncore.protocol.Auth;
 import io.muoncore.protocol.event.ClientEvent;
 import io.muoncore.protocol.event.Event;
 import io.muoncore.protocol.reactivestream.client.ReactiveStreamClient;
@@ -48,7 +49,8 @@ public class DefaultEventClient implements EventClient {
     this.reactiveStreamClientProtocolStack = new ReactiveStreamClient(muon);
   }
 
-  public MuonFuture<EventResult> eventAsync(ClientEvent event) {
+  @Override
+  public MuonFuture<EventResult> eventAsync(ClientEvent event, Auth auth) {
     Channel<ClientEvent, EventResult> api2eventproto = Channels.channel("eventapi", "eventproto");
 
     ChannelFutureAdapter<EventResult, ClientEvent> adapter =
@@ -60,6 +62,7 @@ public class DefaultEventClient implements EventClient {
       config,
       discovery,
       codecs,
+      auth,
       api2eventproto.right(),
       timeoutChannel.left());
 
@@ -70,7 +73,7 @@ public class DefaultEventClient implements EventClient {
 
 
   @Override
-  public EventResult event(ClientEvent event) {
+  public EventResult event(ClientEvent event, Auth auth) {
     try {
       Channel<ClientEvent, EventResult> api2eventproto = Channels.channel("eventapi", "eventproto");
 
@@ -83,6 +86,7 @@ public class DefaultEventClient implements EventClient {
         config,
         discovery,
         codecs,
+        auth,
         api2eventproto.right(),
         timeoutChannel.left());
 
@@ -95,12 +99,12 @@ public class DefaultEventClient implements EventClient {
   }
 
   @Override
-  public <X> MuonFuture<EventReplayControl> replay(String streamName, EventReplayMode mode, Subscriber<Event> subscriber) {
-    return replay(streamName, mode, Collections.emptyMap(), subscriber);
+  public <X> MuonFuture<EventReplayControl> replay(String streamName, Auth auth, EventReplayMode mode, Subscriber<Event> subscriber) {
+    return replay(streamName, auth, mode, Collections.emptyMap(), subscriber);
   }
 
   @Override
-  public <X> MuonFuture<EventReplayControl> replay(String streamName, EventReplayMode mode, Map<String, Object> args, Subscriber<Event> subscriber) {
+  public <X> MuonFuture<EventReplayControl> replay(String streamName, Auth auth, EventReplayMode mode, Map<String, Object> args, Subscriber<Event> subscriber) {
     String replayType;
     switch (mode) {
       case LIVE_ONLY:

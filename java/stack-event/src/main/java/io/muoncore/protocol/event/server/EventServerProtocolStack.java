@@ -8,6 +8,7 @@ import io.muoncore.descriptors.SchemaDescriptor;
 import io.muoncore.message.MuonInboundMessage;
 import io.muoncore.message.MuonMessageBuilder;
 import io.muoncore.message.MuonOutboundMessage;
+import io.muoncore.protocol.Auth;
 import io.muoncore.protocol.ServerProtocolStack;
 import io.muoncore.protocol.event.Event;
 import io.muoncore.protocol.event.EventCodec;
@@ -48,9 +49,10 @@ public class EventServerProtocolStack implements
 
             Map data = codecs.decode(message.getPayload(), message.getContentType(), Map.class);
             Event ev = EventCodec.getEventFromMap(data, codecs);
+            Auth auth = EventCodec.getAuthFromMap(data, codecs);
 
             Channel<EventResult, EventWrapper> evserver = Channels.channel("eventserverapp", "wrapper");
-            EventWrapper wrapper = new EventWrapper(ev, evserver.left());
+            EventWrapper wrapper = new EventWrapper(ev, auth, evserver.left());
 
             evserver.right().receive( eventResult -> {
 

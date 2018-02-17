@@ -13,6 +13,7 @@ import io.muoncore.descriptors.ProtocolDescriptor
 import io.muoncore.descriptors.ServiceExtendedDescriptor
 import io.muoncore.message.MuonMessage
 import io.muoncore.message.MuonMessageBuilder
+import io.muoncore.protocol.Auth
 import io.muoncore.protocol.ChannelFunctionExecShimBecauseGroovyCantCallLambda
 import io.muoncore.protocol.event.ClientEvent
 import io.muoncore.transport.client.TransportClient
@@ -52,7 +53,7 @@ class EventClientProtocolStackSpec extends Specification {
 
         when:
         eventStore.event(
-                ClientEvent.ofType("SomethingHappened").stream("awesome").payload([]).build())
+                ClientEvent.ofType("SomethingHappened").stream("awesome").payload([]).build(), auth())
         sleep(50)
 
         then:
@@ -83,7 +84,7 @@ class EventClientProtocolStackSpec extends Specification {
 
         when:
         def response = eventStore.event(
-                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []))
+                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []), auth())
 
         then:
         response
@@ -121,7 +122,7 @@ class EventClientProtocolStackSpec extends Specification {
 
         when:
         def response = eventStore.event(
-                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []))
+                new ClientEvent("myid", "awesome", "SomethingHappened2", "simples", "1234", "myService", []), auth())
 
         then:
         response
@@ -134,4 +135,8 @@ class EventClientProtocolStackSpec extends Specification {
     def muon() {
         Muon
     }
+
+  def auth() {
+    new Auth("faked", "faked")
+  }
 }

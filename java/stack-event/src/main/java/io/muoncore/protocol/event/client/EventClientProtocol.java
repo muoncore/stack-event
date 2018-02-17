@@ -9,6 +9,7 @@ import io.muoncore.config.AutoConfiguration;
 import io.muoncore.message.MuonInboundMessage;
 import io.muoncore.message.MuonMessageBuilder;
 import io.muoncore.message.MuonOutboundMessage;
+import io.muoncore.protocol.Auth;
 import io.muoncore.protocol.event.ClientEvent;
 import io.muoncore.protocol.event.EventCodec;
 import io.muoncore.protocol.event.EventProtocolMessages;
@@ -28,6 +29,7 @@ public class EventClientProtocol<X> {
     AutoConfiguration configuration,
     Discovery discovery,
     Codecs codecs,
+    Auth auth,
     ChannelConnection<EventResult, ClientEvent> leftChannelConnection,
     ChannelConnection<MuonOutboundMessage, MuonInboundMessage> rightChannelConnection) {
 
@@ -86,7 +88,7 @@ public class EventClientProtocol<X> {
           "No Event Store available"));
       } else {
 
-        Map<String, Object> payload = EventCodec.getMapFromClientEvent(event, configuration);
+        Map<String, Object> payload = EventCodec.getMapFromClientEvent(event, auth, configuration);
 
         Codecs.EncodingResult result = codecs.encode(payload, eventService.get().getCodecs());
         MuonOutboundMessage msg = MuonMessageBuilder.fromService(configuration.getServiceName())

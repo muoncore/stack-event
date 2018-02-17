@@ -1,22 +1,19 @@
 package io.muoncore.protocol.event.server;
 
 import io.muoncore.channel.ChannelConnection;
+import io.muoncore.protocol.Auth;
 import io.muoncore.protocol.event.Event;
 import io.muoncore.protocol.event.client.EventResult;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
 public class EventWrapper {
 
     private Event event;
+    private Auth auth;
     private ChannelConnection<EventResult, ?> channel;
-
-    public EventWrapper(Event event, ChannelConnection<EventResult, ?> channel) {
-        this.event = event;
-        this.channel = channel;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
 
     public void persisted(
             long orderId,

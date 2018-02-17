@@ -2,6 +2,7 @@ package io.muoncore.protocol.event;
 
 import io.muoncore.codec.Codecs;
 import io.muoncore.config.AutoConfiguration;
+import io.muoncore.protocol.Auth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,13 @@ public class EventCodec {
     private static final String EVENT_TIME = "event-time";
     private static final String SCHEMA = "schema";
 
+
+    public static Auth getAuthFromMap(Map<String, Object> data, Codecs codecs) {
+      return new Auth(
+        (String) data.get("provider"),
+        (String) data.get("token")
+      );
+    }
 
     public static Event getEventFromMap(Map<String, Object> data, Codecs codecs) {
         return new Event(
@@ -44,7 +52,7 @@ public class EventCodec {
         return String.valueOf(val);
     }
 
-    public static Map<String, Object> getMapFromClientEvent(ClientEvent event, AutoConfiguration config) {
+    public static Map<String, Object> getMapFromClientEvent(ClientEvent event, Auth auth, AutoConfiguration config) {
         Map<String, Object> payload = new HashMap<>();
         payload.put(ID, event.getId());
         payload.put(STREAM_NAME, event.getStreamName());
@@ -54,6 +62,8 @@ public class EventCodec {
         payload.put(CAUSED_BY_RELATION, event.getCausedByRelation());
         payload.put(SERVICE, config.getServiceName());
         payload.put(SCHEMA, event.getSchema());
+        payload.put("provider", auth.getProvider());
+        payload.put("token", auth.getToken());
         return payload;
     }
 

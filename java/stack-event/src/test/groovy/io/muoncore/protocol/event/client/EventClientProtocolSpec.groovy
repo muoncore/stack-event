@@ -10,6 +10,7 @@ import io.muoncore.config.AutoConfiguration
 import io.muoncore.message.MuonInboundMessage
 import io.muoncore.message.MuonMessageBuilder
 import io.muoncore.message.MuonOutboundMessage
+import io.muoncore.protocol.Auth
 import io.muoncore.protocol.event.ClientEvent
 import io.muoncore.protocol.event.EventProtocolMessages
 import spock.lang.Specification
@@ -38,7 +39,7 @@ class EventClientProtocolSpec extends Specification {
 
         def proto = new EventClientProtocol(
                 new AutoConfiguration(serviceName: "tombola"),
-                discovery, codecs,
+                discovery, codecs, new Auth(),
                 leftChannel.right(), rightChannel.left())
 
         when:
@@ -84,7 +85,7 @@ class EventClientProtocolSpec extends Specification {
 
         def proto = new EventClientProtocol(
                 new AutoConfiguration(serviceName: "tombola"),
-                discovery, codecs,
+                discovery, codecs, new Auth(),
                 leftChannel.right(), rightChannel.left())
 
         when:

@@ -34,7 +34,7 @@ exports.getApi = function (name, infrastructure) {
     endpoints: function () {
       return [];
     },
-    replay: function(streamName, config, clientCallback, errorCallback, completeCallback) {
+    replay: function(streamName, auth, config, clientCallback, errorCallback, completeCallback) {
       var ret = {}
       var muon = this.muon
       infrastructure.discovery.discoverServices(function(services) {
@@ -58,7 +58,7 @@ exports.getApi = function (name, infrastructure) {
       })
       return ret
     },
-    emit: function (event) {
+    emit: function (event, auth) {
 
       var promise = new RSVP.Promise(function (resolve, reject) {
 
@@ -93,6 +93,8 @@ exports.getApi = function (name, infrastructure) {
             };
 
             var evMessage = messages.muonMessage(event, serviceName, eventStore.identifier, protocolName, "EventEmitted");
+            evMessage.token = auth.token
+            evMessage.provider = auth.provider
 
             transChannel.listen(callback);
             transChannel.send(evMessage);

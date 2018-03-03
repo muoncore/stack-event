@@ -1,6 +1,6 @@
 {
   "name": "muon-stack-event",
-  "version": "0.0.1-40",
+  "version": "0.0.1-41",
   "description": "",
   "main": "./distribution/protocol.js",
   "scripts": {

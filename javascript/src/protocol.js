@@ -16,8 +16,8 @@ exports.create = function(muon) {
 
   muon.addServerStack(api)
 
-  muon.replay = function (config, callback, errorCallback, completeCallback) {
-    return api.replay(config, callback, errorCallback, completeCallback);
+  muon.replay = function (streamName, auth, config, callback, errorCallback, completeCallback) {
+    return api.replay(streamName, auth, config, callback, errorCallback, completeCallback);
   }
   muon.emit = function(event, auth) {
     return api.emit(event, auth)

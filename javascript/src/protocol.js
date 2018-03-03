@@ -92,9 +92,9 @@ exports.getApi = function (name, infrastructure) {
               }
             };
 
+            event.token = auth.token
+            event.provider = auth.provider
             var evMessage = messages.muonMessage(event, serviceName, eventStore.identifier, protocolName, "EventEmitted");
-            evMessage.token = auth.token
-            evMessage.provider = auth.provider
 
             transChannel.listen(callback);
             transChannel.send(evMessage);

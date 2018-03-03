@@ -52,7 +52,7 @@ exports.getApi = function (name, infrastructure) {
 
         logger.debug("Found event store: " +JSON.stringify(store))
 
-        var subscriber = muon.subscribe("stream://" + store.identifier + "/stream", config, clientCallback, errorCallback, completeCallback)
+        var subscriber = muon.subscribe("stream://" + store.identifier + "/stream", auth, config, clientCallback, errorCallback, completeCallback)
 
         ret.cancel = subscriber.cancel
       })

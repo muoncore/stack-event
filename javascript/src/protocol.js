@@ -19,8 +19,8 @@ exports.create = function(muon) {
   muon.replay = function (config, callback, errorCallback, completeCallback) {
     return api.replay(config, callback, errorCallback, completeCallback);
   }
-  muon.emit = function(event) {
-    return api.emit(event)
+  muon.emit = function(event, auth) {
+    return api.emit(event, auth)
   }
 }
 

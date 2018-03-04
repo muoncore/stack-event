@@ -135,7 +135,7 @@ public class DefaultEventClient implements EventClient {
     if (eventStore.isPresent()) {
       String eventStoreName = eventStore.get().getIdentifier();
       try {
-        reactiveStreamClientProtocolStack.subscribe(new URI("stream://" + eventStoreName + "/stream?" + query), new Subscriber<StreamData>() {
+        reactiveStreamClientProtocolStack.subscribe(new URI("stream://" + eventStoreName + "/stream?" + query), auth, new Subscriber<StreamData>() {
           @Override
           public void onSubscribe(Subscription s) {
             subscriber.onSubscribe(s);

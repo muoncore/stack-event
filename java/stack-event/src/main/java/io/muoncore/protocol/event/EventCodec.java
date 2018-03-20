@@ -34,17 +34,27 @@ public class EventCodec {
                 (String) data.get(EVENT_TYPE),
                 (String) data.get(STREAM_NAME),
                 (String) data.get(SCHEMA),
-                getCausedByIdAsLong(data.get(CAUSED_BY)),
+                getAsString(data.get(CAUSED_BY)),
                 (String) data.get(CAUSED_BY_RELATION),
                 (String) data.get(SERVICE),
-                (Long)   data.get(ORDER_ID),
-                (Long)   data.get(EVENT_TIME),
+                getAsLong(data.get(ORDER_ID)),
+                getAsLong(data.get(EVENT_TIME)),
                 (Map)data.get(PAYLOAD),
                 codecs
         );
     }
 
-    private static String getCausedByIdAsLong(Object val) {
+    private static Long getAsLong(Object val) {
+      if (val instanceof Double) {
+        Double dat = (Double) val;
+        return dat.longValue();
+      } else if (val instanceof String) {
+        return Long.valueOf((String) val);
+      }
+      return null;
+    }
+
+    private static String getAsString(Object val) {
         if (val instanceof Double) {
             Double dat = (Double) val;
             return String.valueOf(dat.longValue());

@@ -1,5 +1,5 @@
 var bichannel = require('muon-core').channel();
-var event = require("../src/protocol");
+var event = require("../distribution/proto");
 var assert = require('assert');
 var expect = require('expect.js');
 var messages = require('muon-core').Messages;
@@ -57,7 +57,7 @@ describe("test event protocol:", function () {
             }
         }
 
-        var api = event.getApi('server', infrastructure);
+        var api = event.getApi({}, 'server', infrastructure);
 
         api.emit({
             "event-type": null,
@@ -70,7 +70,7 @@ describe("test event protocol:", function () {
             "order-id": null,
             "event-time": null,
             payload: null
-        }).then(function(response) {
+        }, {token: "awesome"}).then(function(response) {
             assert(response)
             assert(response.orderId == "1234")
             assert(response.status == "PERSISTED")
